@@ -1,0 +1,62 @@
+fullstack development:
+
+-- template  (1h)
+   - fastapi 
+   - reactjs
+   - sql  -sqlite
+-- component: fastapi  (1h)
+   - fastapi routing
+   - fastapi mount static content
+   - requirement
+   - .venv
+   - environment variable
+ 
+-- component: react (1h)
+   - package
+   - npm 
+   - vite  
+
+-- IDE (2h)
+   - frontend service launch
+   - backend service launch
+   - extension, live-share, sqlite, cline
+  
+-- database  (1h)
+  - column /table
+  - relationship 
+  - model.py (orm)
+
+
+-- database configuration(1h)
+   -sqlachemy setting 
+
+-- ssh setting (1 h)
+    dev  V@ncouver
+    54.169.214.129
+
+-- github & hugging face (1 h)
+   - git
+   - HF  ??
+   - project 
+
+-- nginx setting (1 h)
+   - domain
+   - ssl certifcate
+   - proxy to docker
+   
+
+--docker (1 h)
+  - docker ps 
+  - docker build
+  = docker up
+
+-- deployement (2h)
+   - upload files
+   - deploy scripts
+
+-- data upgrade (2h)
+   - alembic
+
+-- logic development (4h)
+  - project content/vibe coding 
+   

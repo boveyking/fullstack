@@ -1,0 +1,27 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "7200:80"
+    restart: always
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:////app/data/aws_xray.db
+      # Add other environment variables here as needed from .env
+      # It's better to use env_file for sensitive data
+    env_file:
+      - ./backend/.env
+    restart: always
+    # Uncomment if you want to expose backend port directly
+    # ports:
+    #   - "8000:8000"

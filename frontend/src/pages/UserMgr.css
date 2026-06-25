@@ -1,0 +1,38 @@
+/* Pagination container - prevent width changes */
+.mantine-Pagination-root {
+  width: auto !important;
+  min-width: fit-content !important;
+  flex-shrink: 0 !important;
+}
+
+/* Pagination active page styling - only for number buttons */
+.mantine-Pagination-control[data-active]:not([aria-label*="Previous"]):not([aria-label*="Next"]):not([aria-label*="First"]):not([aria-label*="Last"]) {
+  color: #af0c0c !important;
+}
+
+/* Exclude navigation buttons from custom styling - let them use default Mantine theme */
+.mantine-Pagination-control[aria-label*="Previous"],
+.mantine-Pagination-control[aria-label*="Next"],
+.mantine-Pagination-control[aria-label*="First"],
+.mantine-Pagination-control[aria-label*="Last"] {
+  /* Reset all custom styles to use Mantine defaults */
+  background-color: var(--mantine-color-dark-6) !important;
+  color: var(--mantine-color-dark-0) !important;
+  border-color: var(--mantine-color-dark-4) !important;
+}
+
+.mantine-Pagination-control[aria-label*="Previous"]:hover:not([data-disabled]),
+.mantine-Pagination-control[aria-label*="Next"]:hover:not([data-disabled]),
+.mantine-Pagination-control[aria-label*="First"]:hover:not([data-disabled]),
+.mantine-Pagination-control[aria-label*="Last"]:hover:not([data-disabled]) {
+  background-color: var(--mantine-color-dark-5) !important;
+}
+
+.mantine-Pagination-control[aria-label*="Previous"][data-disabled],
+.mantine-Pagination-control[aria-label*="Next"][data-disabled],
+.mantine-Pagination-control[aria-label*="First"][data-disabled],
+.mantine-Pagination-control[aria-label*="Last"][data-disabled] {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAMILyS -  Family Alliance for Multi-generational International Legacy and Sustainability</title>
+    <!-- Preconnect to FontShare for better performance -->
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <!-- Load Satoshi font from FontShare -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet" />
+    <style>
+      /* Ensure Satoshi font is applied immediately before other styles load */
+      html, body {
+        font-family: 'Satoshi', 'satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+    </style>
+    <script>
+      // Wait for fonts to load and verify Satoshi is available
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function() {
+          // Check with different font weights
+          const weights = ['300', '400', '500', '700', '900'];
+          let loaded = false;
+          for (const weight of weights) {
+            if (document.fonts.check(`${weight} 1em Satoshi`)) {
+              loaded = true;
+              console.log(`✓ Satoshi font (weight ${weight}) loaded successfully`);
+              break;
+            }
+          }
+          if (!loaded) {
+            console.warn('⚠ Satoshi font not detected. Available fonts:', Array.from(document.fonts).map(f => f.family));
+            // Force apply font after a short delay in case it's still loading
+            setTimeout(function() {
+              document.body.style.fontFamily = "'Satoshi', sans-serif";
+            }, 100);
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

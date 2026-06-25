@@ -1,0 +1,37 @@
+version: '3.8'
+
+# Production configuration with Docker volumes
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Named volume for database
+      - app-data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:////app/data/familys.db
+      # Production environment variables
+      # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      # - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    restart: always
+    container_name: familys
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  app-data:
+    driver: local
+    name: familys-data
+    # Optional: Specify driver options for better control
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /path/to/backup/location
+
