@@ -1,27 +1,27 @@
+version: '3.8'
+
 services:
-  frontend:
+  app:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     ports:
-      - "7200:80"
-    restart: always
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+      - "8000:8000"
     volumes:
-      - ./data:/app/data
+      # Use Docker named volume for database persistence
+      - app-data:/app/data
     environment:
-      - DATABASE_URL=sqlite:////app/data/aws_xray.db
-      # Add other environment variables here as needed from .env
-      # It's better to use env_file for sensitive data
-    env_file:
-      - ./backend/.env
-    restart: always
-    # Uncomment if you want to expose backend port directly
-    # ports:
-    #   - "8000:8000"
+      - DATABASE_URL=sqlite:////app/data/familys.db
+      # Add your AWS credentials if needed
+      # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      # - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    restart: unless-stopped
+    container_name: familys
+
+# Define named volumes
+volumes:
+  app-data:
+    driver: local
+    name: familys-data
+

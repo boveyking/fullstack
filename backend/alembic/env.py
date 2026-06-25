@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Import your database and models
 from database import Base
-from models.model import AwsInstance
+ 
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -22,7 +22,7 @@ config = context.config
 # Set the database URL from environment or default
 from dotenv import load_dotenv
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./aws_xray.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./familys.db")
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.

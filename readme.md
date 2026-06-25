@@ -4,6 +4,10 @@ This repository provide a quick ramp up for student to start web application usi
 - curl
 - ssh
 - winget  
+- git
+
+## clone repository  
+- git clone https://github.com/boveyking/fullstack.git
 
 ## Set up Python
 - winget install Python.Python.3.12
@@ -25,4 +29,22 @@ sudo chmod +x dcp.sh
 - dcp.bat
 - dcp.sh
 
+## vscode extension
+- install vscode
+- install extension: live share, sqlite, cline
+
+## vscode setting
+- modify .vscode/settings.json according to your OS and file structure
+
+## cline setting
+- move the chat to right:
+        Open the Cline panel.
+        Right-click the Cline icon or Cline tab.
+        Move View
+        → Secondary Side Bar
+- model: set it to xiaomi/mimo-v2.5
+
+
+## create python virtual environment
+- python -m venv .venv
 

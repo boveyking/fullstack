@@ -4,8 +4,8 @@ interface UserData {
   user_id: number;
   user_name: string | null;
   email: string | null;
-  role?: string | null;
-  plan_id?: number;
+  org_id: number | null;
+  logo: string | null;
 }
 
 interface AuthContextType {
@@ -13,7 +13,6 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (userData: UserData) => void;
   logout: () => void;
-  updateUser: (userData: UserData) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,17 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const updateUser = (userData: UserData) => {
-    setUser(userData);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-  };
-
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
-    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./aws_xray.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./familys.db")
 
 engine = create_engine(
     DATABASE_URL,

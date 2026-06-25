@@ -1,67 +1,48 @@
-from fastapi import FastAPI, Depends, HTTPException, Query, Header
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from typing import List, Optional
 from dotenv import load_dotenv
-from urllib.parse import quote
-from datetime import datetime
-import os
 import logging
-import asyncio
+from pathlib import Path
 from database import init_db, get_db
-
-from models.model import  User
+ 
 from models.schema import (
-    
-    UserCreate,
-    UserLogin,
+    UserRegisterRequest,
+    UserRegisterResponse,
+    OrgDataByTokenResponse,
+    OrganizationsPaginatedResponse,
+    OrganizationStatusUpdate,
+    OrganizationResponse,
+    UsersPaginatedResponse,
+    LoginRequest,
     LoginResponse,
-    UserListResponse,
-    ResetPasswordRequest,
-    ResetPasswordConfirm,
-    
+    InviteRequest,
+    InviteResponse,
+    VerifyResponse,
+    UserInfoResponse,
+    PasswordResetRequest,
+    PasswordResetResponse,
+    ResetPasswordWithTokenRequest,
+    ResetPasswordWithTokenResponse
 )
 from models import crud
- 
-from services.depends_on import get_current_user, require_auth, require_role
- 
-from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-
-# Set boto3 and botocore loggers to WARNING level to reduce verbosity
-logging.getLogger('boto3').setLevel(logging.WARNING)
-logging.getLogger('botocore').setLevel(logging.WARNING)
-logging.getLogger('botocore.hooks').setLevel(logging.WARNING)
-logging.getLogger('botocore.auth').setLevel(logging.WARNING)
-logging.getLogger('botocore.parsers').setLevel(logging.WARNING)
-logging.getLogger('botocore.retryhandler').setLevel(logging.WARNING)
-logging.getLogger('botocore.regions').setLevel(logging.WARNING)
-logging.getLogger('botocore.endpoint').setLevel(logging.WARNING)
-logging.getLogger('botocore.httpsession').setLevel(logging.WARNING)
-logging.getLogger('urllib3').setLevel(logging.WARNING)
-
 logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
-static_assets_dir = "/app/static/assets"
-is_production = os.path.exists("/app")  # Check if we're in Docker/production
-if is_production:
-    if os.path.exists(static_assets_dir) and os.path.isdir(static_assets_dir):
-        app.mount("/assets", StaticFiles(directory=static_assets_dir), name="static")
-    else:
-        logger.warning(f"Static assets directory not found at {static_assets_dir}. Frontend assets will not be served.")
-else:
-    logger.debug("Running in dev mode - static files served by Vite dev server on port 3000")
 
+# Define frontend dist path for static file serving
+frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
 
-
-app = FastAPI(title="Demo API")
+app = FastAPI(title="AWS Xray Automation API")
 
 @app.on_event("startup")
 async def startup_event():
@@ -71,206 +52,266 @@ async def startup_event():
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "*"  # In production, replace with your actual domain
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-""" @app.get("/")
+@app.get("/")
 async def root():
-    return {"message": "Demo API"} """
+    """Serve frontend index.html for root route"""
+    index_path = frontend_dist / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    # Fallback for development/testing
+    return {"message": "Backend API"}
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "healthy @" + str(datetime.now())}
+    return {"status": "healthy"}
 
-   
-class EnvVariableUpdate(BaseModel):
-    region: str
-    name: str
-    value: str
-
-
-class PingRequest(BaseModel):
-    domain: str
-    webbase: str
-
-  
-@app.post("/api/auth/login", response_model=LoginResponse)
-async def login(
-    credentials: UserLogin,
+ 
+@app.post("/api/register", response_model=UserRegisterResponse, status_code=201)
+async def register_user(
+    request: UserRegisterRequest,
     db: Session = Depends(get_db)
 ):
-    """Login user"""
-    logger.info(f"Login attempt for email: {credentials.email}")
-    user = crud.authenticate_user(db, credentials.email, credentials.password)
-    if not user:
-        logger.warning(f"Authentication failed for email: {credentials.email} - Incorrect email or password")
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect email or password"
-        )
-    if not user.is_active:
-        raise HTTPException(
-            status_code=403,
-            detail="User account is inactive"
-        )
-    return LoginResponse(
-        user_id=int(user.id),
-        user_name=str(user.user_name),
-        email=str(user.email),
-        ref_code=user.ref_code,
-        role=user.role,
-        plan_id=int(user.plan_id) if user.plan_id is not None else -1
-    )
+    """Register a new user with organization and address"""
+    try:
+        return crud.register_user(db, request)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in register_user: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to register user: {str(e)}")
 
 
-@app.post("/api/auth/logout", status_code=200)
-async def logout():
-    """Logout user (client-side session management)"""
-    return {"message": "Successfully logged out"}
-
-
-@app.post("/api/auth/verify/{token}", status_code=200)
-async def verify_user(
+@app.get("/api/organization/token/{token}", response_model=OrgDataByTokenResponse)
+async def get_organization_by_token(
     token: str,
     db: Session = Depends(get_db)
 ):
-    """Verify user email with token"""
+    """Get organization data by token for pre-populating registration form"""
     try:
-        success = crud.verify_user_by_token(db, token)
-        if success:
-            return {"message": "Email verified successfully"}
-        else:
-            raise HTTPException(
-                status_code=400,
-                detail="No valide verification request"
-            )
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error verifying user: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to verify user: {str(e)}"
-        )
-
-
-@app.post("/api/auth/reset-password", status_code=200)
-async def request_password_reset(
-    request: ResetPasswordRequest,
-    db: Session = Depends(get_db)
-):
-    """Request password reset for a user by email"""
-    try:
-        # Validate email format
-        if not request.email or '@' not in request.email:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid email format"
-            )
-        
-        # Request password reset (always returns True for security)
-        crud.request_password_reset(db, request.email)
-        
-        # Always return success message (don't reveal if email exists)
-        return {"message": "If this email is found, we will send a password reset email"}
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error requesting password reset: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to process password reset request: {str(e)}"
-        )
-
-
-@app.post("/api/auth/reset-password/confirm", status_code=200)
-async def confirm_password_reset(
-    request: ResetPasswordConfirm,
-    db: Session = Depends(get_db)
-):
-    """Confirm password reset with token and new password"""
-    try:
-        success = crud.reset_password_by_token(db, request.token, request.password)
-        if success:
-            return {"message": "Password reset successfully"}
-        else:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid request token"
-            )
+        return crud.get_org_by_token(db, token)
     except ValueError as e:
-        logger.warning(f"Validation error during password reset: {str(e)}")
-        raise HTTPException(status_code=400, detail=str(e))
-    except HTTPException:
-        raise
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        logger.error(f"Error resetting password: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to reset password: {str(e)}"
-        )
+        logger.error(f"Error in get_organization_by_token: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve organization: {str(e)}")
 
 
-# User Management endpoints
-@app.get("/api/users", response_model=UserListResponse)
-async def get_users(
-    page: int = Query(1, ge=1, description="Page number (starts from 1)"),
-    page_size: int = Query(10, ge=1, le=100, description="Number of users per page"),
-    email: Optional[str] = Query(None, description="Filter by email (partial match)"),
-    uuid: Optional[str] = Query(None, description="Filter by UUID (partial match)"),
-    _current_user: User = Depends(require_role("god")),
+@app.post("/api/login", response_model=LoginResponse)
+async def login(
+    request: LoginRequest,
     db: Session = Depends(get_db)
 ):
-    """Get all users with pagination and filters (requires god role)"""
+    """Authenticate a user by username/email and password"""
     try:
-        logger.info(f"Fetching users - page: {page}, page_size: {page_size}, email filter: {email}, uuid filter: {uuid}")
-        result = crud.list_users(
-            db=db,
-            page=page,
-            page_size=page_size,
-            email=email,
-            uuid=uuid
-        )
-        return UserListResponse(**result)
+        response = crud.authenticate_user(db, request)
+        # Always return LoginResponse, even for failures
+        # Frontend will check response.code and response.result
+        return response
     except Exception as e:
-        logger.error(f"Error fetching users: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to fetch users: {str(e)}"
+        logger.error(f"Error in login: {str(e)}", exc_info=True)
+        return LoginResponse(
+            code=500,
+            result=False,
+            message=f"Failed to authenticate user: {str(e)}",
+            user_data=None
         )
 
-# Catch-all route for SPA (Single Page Application)
-# This MUST be the last route defined to avoid intercepting API calls
-@app.get("/{full_path:path}")
-async def serve_spa(full_path: str):
-    """
-    Serve static files and handle SPA routing.
-    This route catches all unmatched paths and serves the frontend.
-    Must be defined last to ensure API routes are matched first.
-    Only active in production/Docker mode.
-    """
-    # If API call, let it bubble up (handled by other routes or 404)
-    if full_path.startswith("api/"):
-        raise HTTPException(status_code=404, detail="API endpoint not found")
-    
-    # Only serve static files in production/Docker mode
-    if not is_production:
-        raise HTTPException(status_code=404, detail="Not found (dev mode - frontend runs on port 3000)")
-    
-    # Check if file exists in static directory
-    static_file_path = os.path.join("/app/static", full_path)
-    if os.path.isfile(static_file_path):
-        return FileResponse(static_file_path)
 
-    # Otherwise return index.html for SPA routing
-    index_path = "/app/static/index.html"
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    
-    return {"message": "Frontend not found (is the static directory populated?)"}
+@app.get("/api/organizations", response_model=OrganizationsPaginatedResponse)
+async def get_organizations(
+    offset: int = Query(0, ge=0, description="Number of records to skip"),
+    length: int = Query(10, ge=1, le=100, description="Number of records to return"),
+    db: Session = Depends(get_db)
+):
+    """Get paginated organizations regardless of status and is_active"""
+    try:
+        organizations, total = crud.get_all_organizations(db, offset=offset, limit=length)
+        # FastAPI will automatically convert Organization models to OrganizationResponse
+        # using Pydantic's from_attributes=True
+        return OrganizationsPaginatedResponse(
+            items=organizations,  # type: ignore
+            total=total,
+            offset=offset,
+            limit=length
+        )
+    except Exception as e:
+        logger.error(f"Error in get_organizations: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to fetch organizations: {str(e)}")
 
- 
+
+@app.patch("/api/organizations/{org_id}/status", response_model=OrganizationResponse)
+async def update_organization_status(
+    org_id: int,
+    request: OrganizationStatusUpdate,
+    db: Session = Depends(get_db)
+):
+    """Update organization status"""
+    try:
+        organization = crud.update_organization_status(db, org_id, request.status)
+        return organization  # type: ignore
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in update_organization_status: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to update organization status: {str(e)}")
+
+
+@app.get("/api/users", response_model=UsersPaginatedResponse)
+async def get_users(
+    offset: int = Query(0, ge=0, description="Number of records to skip"),
+    length: int = Query(10, ge=1, le=100, description="Number of records to return"),
+    db: Session = Depends(get_db)
+):
+    """Get paginated users with organization name"""
+    try:
+        users, total = crud.get_all_users(db, offset=offset, limit=length)
+        return UsersPaginatedResponse(
+            items=users,  # type: ignore
+            total=total,
+            offset=offset,
+            limit=length
+        )
+    except Exception as e:
+        logger.error(f"Error in get_users: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to fetch users: {str(e)}")
+
+
+@app.post("/api/invite", response_model=InviteResponse)
+async def invite_user(
+    request: InviteRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Send an invitation to a user to join an organization
+    
+    Workflow:
+    1. Validate organization exists
+    2. Create invitation record (to be implemented)
+    3. Send invitation notification (to be implemented)
+    """
+    try:
+        response = crud.invite_user(db, request)
+        return response
+    except Exception as e:
+        logger.error(f"Error in invite_user: {str(e)}", exc_info=True)
+        return InviteResponse(
+            code=500,
+            result=False,
+            message=f"Failed to send invitation: {str(e)}",
+            invite_id=None
+        )
+
+
+@app.get("/api/verify/{token}", response_model=VerifyResponse)
+async def verify_invitation(
+    token: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Verify an invitation token
+    
+    Workflow:
+    1. Check if token exists in tbl_invitation
+    2. If exists and is_active=True: update is_active to False and return success
+    3. If exists and is_active=False: return "invitation already accepted"
+    4. If doesn't exist: return "invalid invitation code"
+    """
+    try:
+        response = crud.verify_invitation(db, token)
+        return response
+    except Exception as e:
+        logger.error(f"Error in verify_invitation: {str(e)}", exc_info=True)
+        return VerifyResponse(
+            code=500,
+            result=False,
+            message=f"Failed to verify invitation: {str(e)}",
+            email=None,
+            organization=None
+        )
+
+
+@app.get("/api/user/{user_id}", response_model=UserInfoResponse)
+async def get_user_info(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get user information including organization and address details"""
+    try:
+        return crud.get_user_info(db, user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in get_user_info: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve user information: {str(e)}")
+
+
+@app.post("/api/reset-password/request", response_model=PasswordResetResponse)
+async def request_password_reset(
+    request: PasswordResetRequest,
+    db: Session = Depends(get_db)
+):
+    """Request a password reset email"""
+    try:
+        response = crud.request_password_reset(db, request)
+        return response
+    except Exception as e:
+        logger.error(f"Error in request_password_reset: {str(e)}", exc_info=True)
+        return PasswordResetResponse(
+            code=500,
+            result=False,
+            message=f"Failed to process password reset request: {str(e)}"
+        )
+
+
+@app.post("/api/reset-password", response_model=ResetPasswordWithTokenResponse)
+async def reset_password_with_token(
+    request: ResetPasswordWithTokenRequest,
+    db: Session = Depends(get_db)
+):
+    """Reset password using a reset token"""
+    try:
+        response = crud.reset_password_with_token(db, request)
+        return response
+    except Exception as e:
+        logger.error(f"Error in reset_password_with_token: {str(e)}", exc_info=True)
+        return ResetPasswordWithTokenResponse(
+            code=500,
+            result=False,
+            message=f"Failed to reset password: {str(e)}"
+        )
+
+
+# Serve static files from frontend build
+# Check if frontend dist directory exists (for Docker deployment)
+if frontend_dist.exists():
+    # Mount static files (JS, CSS, images, etc.)
+    app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        """Serve frontend for all non-API routes (SPA fallback)"""
+        # Skip API routes
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not found")
+        
+        # Try to serve the requested file
+        file_path = frontend_dist / full_path
+        if file_path.is_file():
+            return FileResponse(file_path)
+        
+        # Otherwise, serve index.html (for React Router)
+        index_path = frontend_dist / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        
+        raise HTTPException(status_code=404, detail="Not found")

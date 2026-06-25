@@ -1,187 +1,148 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, Link, useLocation } from 'react-router-dom'
-import {
-  Container,
-  Paper,
-  Title,
-  TextInput,
-  PasswordInput,
-  Button,
-  Stack,
-  Alert,
-  Text,
-  Anchor,
-} from '@mantine/core'
-import { LogIn, AlertCircle, CheckCircle } from 'lucide-react'
-import { authService, LoginRequest } from '../services/authService'
-import { useAuth } from '../contexts/AuthContext'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../components/ContactPopup.css';
+import { loginUser } from '../services/api';
+import { useToast } from '../components/useToast';
+import { Container } from '@mantine/core';
+import { useAuth } from '../contexts/AuthContext';
+import { Box } from '@mantine/core';
 
-function Login() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { login, isAuthenticated } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
-  const [formData, setFormData] = useState<LoginRequest>({
-    email: '',
+export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({
+    username_or_email: '',
     password: '',
-  })
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  });
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/')
-    }
-  }, [isAuthenticated, navigate])
-
-  // Check for success message from registration
-  useEffect(() => {
-    if (location.state?.message) {
-      setSuccessMessage(location.state.message)
-    }
-  }, [location.state])
-
-  const validateForm = (): boolean => {
-    const errors: Record<string, string> = {}
-    
-    if (!/^\S+@\S+$/.test(formData.email)) {
-      errors.email = 'Invalid email'
-    }
-    
-    if (formData.password.length < 1) {
-      errors.password = 'Password is required'
-    }
-    
-    setValidationErrors(errors)
-    return Object.keys(errors).length === 0
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { showToast, ToastComponent } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+    setError(null);
     
-    if (!validateForm()) {
-      return
-    }
-
-    try {
-      setLoading(true)
-      setError(null)
-      setSuccessMessage(null)
-
-      const response = await authService.login(formData)
-
-      // Use AuthContext to save user data
-      login({
-        user_id: response.user_id,
-        user_name: response.user_name,
-        email: response.email,
-        role: response.role,
-        plan_id: response.plan_id,
-      })
-
-      // Redirect to dashboard/home
-      navigate('/')
-    } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Login failed')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleResetPassword = async (e: React.MouseEvent) => {
-    e.preventDefault()
+    setIsSubmitting(true);
     
-    // Validate email
-    if (!formData.email || !/^\S+@\S+$/.test(formData.email)) {
-      setError('Input valid email')
-      setSuccessMessage(null)
-      return
-    }
-
     try {
-      setLoading(true)
-      setError(null)
-      setSuccessMessage(null)
-
-      const response = await authService.requestPasswordReset({ email: formData.email })
-      setSuccessMessage(response.message)
+      const response = await loginUser({
+        username_or_email: formData.username_or_email,
+        password: formData.password,
+      });
+      
+      if (response.code === 200 && response.result && response.user_data) {
+        // Save user data to AuthContext (which will also save to localStorage)
+        login(response.user_data);
+        showToast('Login successful!', 'success');
+        // Navigate to home page after successful login
+        setTimeout(() => {
+          navigate('/');
+        }, 500);
+      } else {
+        //setError('Failed to login. Please check your credentials.');
+        showToast(response.message || 'Login failed', 'error');
+      }
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to request password reset')
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to login. Please try again.';
+      //setError(errorMessage);
+      showToast(errorMessage, 'error');
+      console.error('Login error:', err);
     } finally {
-      setLoading(false)
+      setIsSubmitting(false);
     }
-  }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   return (
-    <Container size={420} my={40}>
-      <Paper withBorder shadow="md" p={30} radius="md">
-        <Stack gap="md">
-          <div style={{ textAlign: 'center' }}>
-            <LogIn size={48} style={{ margin: '0 auto 16px', color: 'var(--mantine-color-blue-6)' }} />
-            <Title order={2}>Login</Title>
-            <Text c="dimmed" size="sm" mt={5}>
-              Enter your credentials to access your account
-            </Text>
+    <Container  >
+        <Box pt="lg" pb="lg"  >
+      {ToastComponent}
+      <div className="register-popup-content">
+        <div className="contact-popup-header">
+          <h2 className="contact-popup-title">Login to FAMILyS</h2>
+        </div>
+
+        <p className="contact-popup-description">
+          Welcome back! Please sign in to your account.
+        </p>
+
+        {error && (
+          <div style={{ 
+            color: 'red', 
+            padding: '10px', 
+            marginBottom: '20px', 
+            backgroundColor: '#ffe6e6', 
+            borderRadius: '4px' 
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username_or_email">Username or Email*</label>
+            <input
+              type="text"
+              id="username_or_email"
+              name="username_or_email"
+              placeholder="Enter your username or email"
+              value={formData.username_or_email}
+              onChange={handleChange}
+              required
+            />
           </div>
 
-          {successMessage && (
-            <Alert icon={<CheckCircle size={16} />} title="Success" color="green">
-              {successMessage}
-            </Alert>
-          )}
+          <div className="form-group">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label htmlFor="password">Password*</label>
+              <a 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/reset-password');
+                }}
+                style={{ 
+                  fontSize: '0.85rem', 
+                  color: 'white', 
+                  textDecoration: 'none',
+                  transition: 'color 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'orange'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#999'}
+              >
+                Forgot Password
+              </a>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          {error && (
-            <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
-              {error}
-            </Alert>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <Stack gap="md">
-              <TextInput
-                label="Email"
-                placeholder="Enter your email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                error={validationErrors.email}
-              />
-
-              <PasswordInput
-                label="Password"
-                placeholder="Enter your password"
-                required
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                error={validationErrors.password}
-              />
-
-              <Button type="submit" fullWidth loading={loading} mt="md">
-                Login
-              </Button>
-            </Stack>
-          </form>
-
-          <Text ta="center" size="sm" mt="md">
-            Don't have an account?{' '}
-            <Anchor component={Link} to="/register">
-              Register here
-            </Anchor>
-          </Text>
-          
-          <Text ta="center" size="sm" mt="xs">
-            <Anchor href="#" onClick={handleResetPassword}>
-              Reset Password
-            </Anchor>
-          </Text>
-        </Stack>
-      </Paper>
+          <button 
+            type="submit" 
+            className="form-submit-btn" 
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+      </div>
+      </Box>
     </Container>
-  )
+  );
 }
-
-export default Login
 
