@@ -1,3 +1,5 @@
+## Description
+This repository provide a quick ramp up for student to start web application using fastapi+reactjs stack.
 ## Tools we need
 - curl
 - ssh
