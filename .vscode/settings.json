@@ -1,0 +1,37 @@
+{
+  "workbench.colorCustomizations": {
+    "editorOverviewRuler.background": "#aa9",  // for the "track" where the scrollThumb lives
+    "scrollbarSlider.background": "#9c460d",  // for the scrollThumb color
+},
+  "terminal.integrated.profiles.windows": {
+    "Command Prompt-Venv": {
+      "type": "windows",
+      "path": "cmd.exe",
+      "args": [
+        "/k",
+        ".venv\\Scripts\\activate.bat"
+      ]
+    },
+    "Dev Server Frontend": {
+      "path": "cmd.exe",
+      "args": [
+        "/k",
+        "cd frontend && npm run dev"
+      ],
+      "icon": "server-process",
+      "color": "terminal.ansiGreen",
+    },
+ 
+    "Dev Server Backend": {
+      "path": "cmd.exe",
+      "args": [
+        "/k",
+        "cd /d D:\\fullstack-template && D:\\fullstack-template\\.venv\\Scripts\\python.exe -m uvicorn backend.main:app --app-dir backend  --reload --host 0.0.0.0 --port 8000"
+      ],
+      "icon": "server-process",
+      "color": "terminal.ansiGreen"
+    },
+    
+  "terminal.integrated.defaultProfile.windows": "Command Prompt-Venv",
+  "kiroAgent.configureMCP": "Disabled"
+}

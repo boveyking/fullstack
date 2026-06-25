@@ -6,7 +6,7 @@ __pycache__/
 .Python
 venv/
 .venv/
-.vscode/
+ 
 env/
 ENV/
 *.egg-info/
@@ -22,7 +22,7 @@ build/
 *.sqlite3
 
 # IDEs
-.vscode/
+ 
 .idea/
 *.swp
 *.swo
