@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8118:8000"
     volumes:
       # Use Docker named volume for database persistence
       - app-data:/app/data

@@ -51,7 +51,7 @@ sudo chmod +x dcp.sh
 
 ## database configuration:
 - for local dev: change variable DATABASE_URL for the db name  in backend/.env.py  
-- for production, edit this variable in docker-compose.yml
+- for production, edit this variable in dockerfile
 - be careful, above 2 settings are in different format, in .env, use relative path, in docker, use volumes.
 
 ## lunch backend
@@ -62,10 +62,41 @@ sudo chmod +x dcp.sh
 - select 'dev server frontend' in terminal launch profile
 - open browser at http://localost:3000
 
+## react routing
+- App.tsx holds routing rules, pattern --> Page
+- ex: <Route path="/register/:token" element={<Register />} />
+  /register/:token is pattern, Register is a Page
+
+## api endpoint
+- main.py holds api endpoint, pattern --> function
+-ex: @app.get("/api/health")
+     async def health_check():
+     /api/health is the pattern and def health_check() is fucntion to handle this api
+
 
 ## docker file
 - env variables
 - container_name
 - volumnes
+- port number 
+
+## data table
+- use alembic to add or update table
+- modify according in  model.py to make schema and underneath Db synced.
 
 
+## alembic migration
+- run the following command to create a migration python file in versions folder
+  alembic revision -m  "the message for changes"
+- modify model.py accordingly for the changes made in db
+- run the following command to update db:
+  alembic upgrade head
+
+
+## deployment
+- dcp.sh /dcp.bat scripts to push local changes to deployment server
+- ./deply.sh to deploy
+
+## nginx config
+- domain name
+- proxy to docker port
