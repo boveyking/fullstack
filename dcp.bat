@@ -5,7 +5,7 @@ goto :main
 
 :main
 REM === Server Configuration ===
-set "SSH_HOST=UPDATE_THIS_WITH_REAL_PWD"
+set "SSH_HOST=UPDATE_THIS_WITH_REAL_IP"
 set "SSH_USER=dev"
 set "APP=vpn"
 set "SSH_PASS=UPDATE_THIS_WITH_REAL_PWD"

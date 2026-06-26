@@ -21,20 +21,12 @@ This repository provide a quick ramp up for student to start web application usi
 sudo chmod +x dc.sh
 sudo chmod +x dcp.sh
 
-## set the TARGET_DIR 
-- dc.sh
-- dc.bat
 
-## set the  app name
-- dcp.bat
-- dcp.sh
 
 ## vscode extension
 - install vscode
 - install extension: live share, sqlite, cline
 
-## vscode setting
-- modify .vscode/settings.json according to your OS and file structure
 
 ## cline setting
 - move the chat to right:
@@ -73,6 +65,11 @@ sudo chmod +x dcp.sh
      async def health_check():
      /api/health is the pattern and def health_check() is fucntion to handle this api
 
+## development /improve/customize
+this template already wired frontend and backend and database, dev can quickly customize based on their aplication
+- change frontend page and compoent
+- add endpoints in backend
+- add schema,  change data   
 
 ## docker file
 - env variables
@@ -92,6 +89,13 @@ sudo chmod +x dcp.sh
 - run the following command to update db:
   alembic upgrade head
 
+## set the deployment parameters
+- TARGET_DIR in dc.bat / dc.sh
+
+- IP, PWD, App Name in    dcp.sh/dcp.bat
+ 
+
+ 
 
 ## deployment
 - dcp.sh /dcp.bat scripts to push local changes to deployment server
@@ -100,3 +104,4 @@ sudo chmod +x dcp.sh
 ## nginx config
 - domain name
 - proxy to docker port
+- certificates for ssl
