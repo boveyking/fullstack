@@ -1,11 +1,18 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from the same directory as this file
+load_dotenv(Path(__file__).parent / ".env")
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fullstack.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL environment variable is not set. "
+        "Please set it in your .env file or environment before starting the application."
+    )
 
 engine = create_engine(
     DATABASE_URL,

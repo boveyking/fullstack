@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Ensure the backend directory is in sys.path so sibling modules can be imported
+_backend_dir = str(Path(__file__).resolve().parent)
+if _backend_dir not in sys.path:
+    sys.path.insert(0, _backend_dir)
+
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -5,7 +13,6 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import logging
-from pathlib import Path
 from database import init_db, get_db
  
 from models.schema import (
@@ -42,7 +49,7 @@ load_dotenv()
 # Define frontend dist path for static file serving
 frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
 
-app = FastAPI(title="AWS Xray Automation API")
+app = FastAPI(title="Demo API")
 
 @app.on_event("startup")
 async def startup_event():

@@ -11,13 +11,18 @@ services:
       # Use Docker named volume for database persistence
       - app-data:/app/data
     environment:
-      - DATABASE_URL=sqlite:////app/data/fullstack.db
+      # DATABASE_URL is set in Dockerfile as default; override here only if needed
       # Add your AWS credentials if needed
       # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       # - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     restart: unless-stopped
     container_name: fullstack
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 # Define named volumes
 volumes:

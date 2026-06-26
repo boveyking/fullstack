@@ -19,10 +19,15 @@ from database import Base
 # access to the values within the .ini file in use.
 config = context.config
 
-# Set the database URL from environment or default
+# Set the database URL from environment (required — no default fallback)
 from dotenv import load_dotenv
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fullstack.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL environment variable is not set. "
+        "Please set it in your .env file or environment before running Alembic migrations."
+    )
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.

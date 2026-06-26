@@ -48,3 +48,24 @@ sudo chmod +x dcp.sh
 ## create python virtual environment
 - python -m venv .venv
 
+
+## database configuration:
+- for local dev: change variable DATABASE_URL for the db name  in backend/.env.py  
+- for production, edit this variable in docker-compose.yml
+- be careful, above 2 settings are in different format, in .env, use relative path, in docker, use volumes.
+
+## lunch backend
+- select 'dev server backend' in terminal launch profile
+- check the output for any error for port 8000 in terminal
+
+## lunch frontend
+- select 'dev server frontend' in terminal launch profile
+- open browser at http://localost:3000
+
+
+## docker file
+- env variables
+- container_name
+- volumnes
+
+
