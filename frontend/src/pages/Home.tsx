@@ -121,7 +121,7 @@ export default function Home({ onContactClick }: HomeProps) {
         
         <div className="content-overlay">
           <h1>
-            <span>fullstack</span>
+            <span>FAMILyS</span>
             <span className="text-slider">
               {texts.map((text, index) => (
                 <span  
@@ -169,15 +169,16 @@ export default function Home({ onContactClick }: HomeProps) {
         <div id="about-section" className="about-content">
           <div className="about-left">
             <p  id="about-left-section" className="highlight-text" ref={aboutLeftTextRef}>
-            fullstack  is the demo framework.  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          
+            FAMILyS (Family Alliance for Multigenerational International Legacy and Sustainability) is a rigorously verified and close-knit network of families and single-family-office principals. Our members steward multigenerational legacies and navigate the distinct opportunities and complexities of family enterprise. 
             </p>
           </div>
           <div className="about-right">
             <p  id="about-right-section" className="description-text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
-            
+            We exist to empower families to shape the future guided by their heritage, leveraging the power of connection, technology, and shared wisdom.<br/>
+For over a decade, more than 200 members have joined us through referral only, each verified by real name and stringent background checks to ensure a foundation of authenticity.<br/>
+We broaden perspectives by convening those who understand that legacy is not inherited—it is built, generation by generation. Heritage must endure, and we see this as humanity's shared mission. Through curated gatherings, mutual learning and pooled expertise, we hold the space where tradition informs innovation and peers become partners in defining tomorrow.<br/>
+No one is an island, nor must anyone explore alone. As AI reshapes the landscape of possibility, we have built an AI-driven co-creation community where technology bridges trust and information siloes. Here, artificial intelligence amplifies human wisdom rather than replacing it, enabling families to collaborate, innovate, and steward their legacies with unprecedented clarity and connection.<br/>
+Our community is private, purpose-driven, and for those committed to the enduring work of building lasting legacies. Together, we make the world a better place.
             </p>
             
             <div className="skills-container">
