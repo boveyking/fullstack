@@ -67,7 +67,7 @@ export default function Login() {
       {ToastComponent}
       <div className="register-popup-content">
         <div className="contact-popup-header">
-          <h2 className="contact-popup-title">Login to FAMILyS</h2>
+          <h2 className="contact-popup-title">Login to fullstack</h2>
         </div>
 
         <p className="contact-popup-description">

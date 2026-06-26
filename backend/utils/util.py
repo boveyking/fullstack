@@ -9,7 +9,7 @@ import logging
 email_token="0711dd477c989432dcf8c90f762936ea"
 from utils.feishu_email import send_email
  
-sender_email="no_reply@familys.ai"
+sender_email="no_reply@fullstack.ai"
 accept_invitation_template="""
 <!DOCTYPE html>
 <html lang="en">
@@ -148,12 +148,12 @@ accept_invitation_template="""
             </div>
             
             <div class="message">
-                You are invited to join  FAMILyS! To complete your registration and secure your account, 
+                You are invited to join  fullstack! To complete your registration and secure your account, 
                 please accept the invitation by clicking the button below.
             </div>
             
             <a href="{domain}/register/{link}" class="verify-button">
-                Accept FAMILyS Invitation
+                Accept fullstack Invitation
             </a>
             
             <div class="alternative-link">
@@ -163,14 +163,14 @@ accept_invitation_template="""
             
             <div class="security-note">
                 <p><strong>Security Note:</strong> This verification link will expire in 24 hours for your security. 
-                If you didn't create an account with FAMILyS, please ignore this email.</p>
+                If you didn't create an account with fullstack, please ignore this email.</p>
             </div>
         </div>
         
         <div class="footer">
-            <p><strong>FAMILyS Team</strong></p>
+            <p><strong>fullstack Team</strong></p>
             <p>Family Alliance for Multi-generational International Legacy and Sustainability</p>
-            <p>© 2025 FAMILyS. All rights reserved.</p>
+            <p>© 2025 fullstack. All rights reserved.</p>
            </div>
     </div>
 </body>
@@ -314,11 +314,11 @@ email_activation_template="""
             </div>
             
             <div class="message">
-                Good news! Your FAMILyS account for {organization} has been activated. You can now login and start using your account.
+                Good news! Your fullstack account for {organization} has been activated. You can now login and start using your account.
             </div>
             
             <a href="{domain}/login" class="verify-button">
-                Login to FAMILyS
+                Login to fullstack
             </a>
             
             <div class="alternative-link">
@@ -328,14 +328,14 @@ email_activation_template="""
             
             <div class="security-note">
                 <p><strong>Security Note:</strong> This verification link will expire in 24 hours for your security. 
-                If you didn't create an account with FAMILyS, please ignore this email.</p>
+                If you didn't create an account with fullstack, please ignore this email.</p>
             </div>
         </div>
         
         <div class="footer">
-            <p><strong>FAMILyS Team</strong></p>
+            <p><strong>fullstack Team</strong></p>
             <p>Family Alliance for Multi-generational International Legacy and Sustainability</p>
-            <p>© 2025 FAMILyS. All rights reserved.</p>
+            <p>© 2025 fullstack. All rights reserved.</p>
            </div>
     </div>
 </body>
@@ -347,7 +347,7 @@ email_reset_password_template="""
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password - FAMILyS</title>
+    <title>Reset Password - fullstack</title>
     <style>
         body {{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -491,14 +491,14 @@ email_reset_password_template="""
             
             <div class="security-note">
                 <p><strong>Security Note:</strong> This verification link will expire in 24 hours for your security. 
-                If you didn't create an account with FAMILyS, please ignore this email.</p>
+                If you didn't create an account with fullstack, please ignore this email.</p>
             </div>
         </div>
         
         <div class="footer">
-            <p><strong>FAMILyS Team</strong></p>
+            <p><strong>fullstack Team</strong></p>
             <p>Family Alliance for Multi-generational International Legacy and Sustainability</p>
-            <p>© 2025 FAMILyS. All rights reserved.</p>
+            <p>© 2025 fullstack. All rights reserved.</p>
            </div>
     </div>
 </body>
@@ -513,7 +513,7 @@ def send_activation_email(email_to:str, to_name:str,  organization:str):
                 dev_mode = (dev_mode_raw or "").lower().strip()
                 print(f"[DEBUG send_activation_email] dev_mode processed: {repr(dev_mode)}")
                 
-                domain = "http://localhost:3000" if dev_mode == 'yes' else "https://familys.ai"
+                domain = "http://localhost:3000" if dev_mode == 'yes' else "https://fullstack.ai"
                 print(f"[DEBUG send_activation_email] Selected domain: {domain}")
                 
                 holder={
@@ -526,7 +526,7 @@ def send_activation_email(email_to:str, to_name:str,  organization:str):
                 }
                 content=email_activation_template.format(**holder)
                
-                send_email(email_to, "Your FAMILyS account has been activated", content)
+                send_email(email_to, "Your fullstack account has been activated", content)
                 print(f"Email sent to {email_to}")
         except Exception as e: 
                 logging.error(f"Error sending email to {email_to}: {e}")
@@ -558,7 +558,7 @@ def send_invitation_email(email_to:str, to_name:str, message:str):
                     sys.stderr.write(f"[DEBUG] Using LOCALHOST (dev_mode='yes')\n")
                 else:
                     # PRODUCTION MODE - dev_mode is None, empty, or anything other than 'yes'
-                    domain = "https://familys.ai"
+                    domain = "https://fullstack.ai"
                     sys.stderr.write(f"[DEBUG] Using PRODUCTION domain (dev_mode={repr(dev_mode)})\n")
                 
                 sys.stderr.flush()
@@ -577,13 +577,13 @@ def send_invitation_email(email_to:str, to_name:str, message:str):
                 #content=accept_invitation_template.format(**holder)
                 content=f"""
                 <p>Hello {to_name}! 👋</p>
-                 <p>You are invited to join FAMILyS. Please accept the invitation to join FAMILyS</p>
-                 <a href="{domain}/register/{message}">Accept FAMILyS Invitation</a>
+                 <p>You are invited to join fullstack. Please accept the invitation to join fullstack</p>
+                 <a href="{domain}/register/{message}">Accept fullstack Invitation</a>
                 
                 """ 
 
-                #send_email(email_to, "FAMILyS Invitation", content)   
-                send_email(email_to, "You are invited to join FAMILyS", content)   
+                #send_email(email_to, "fullstack Invitation", content)   
+                send_email(email_to, "You are invited to join fullstack", content)   
                 sys.stderr.write(f"[DEBUG] Email sent to {email_to} with domain: {domain}\n")
                 sys.stderr.flush()
                 sys.stderr.write("=" * 60 + "\n")
@@ -604,7 +604,7 @@ def send_reset_password_email(email_to:str,   token:str):
                 dev_mode = (dev_mode_raw or "").lower().strip()
                 print(f"[DEBUG send_reset_password_email] dev_mode processed: {repr(dev_mode)}")
                 
-                domain = "http://localhost:3000" if dev_mode == 'yes' else "https://familys.ai"
+                domain = "http://localhost:3000" if dev_mode == 'yes' else "https://fullstack.ai"
                 print(f"[DEBUG send_reset_password_email] Selected domain: {domain}")
                 
                 holder={
@@ -613,7 +613,7 @@ def send_reset_password_email(email_to:str,   token:str):
                 }
                 content=email_reset_password_template.format(**holder)
  
-                send_email(email_to, "Reset Password for FAMILyS", content)   
+                send_email(email_to, "Reset Password for fullstack", content)   
                 print(f"Email sent to {email_to}")
         except Exception as e: 
                 logging.error(f"Error sending email to {email_to}: {e}")

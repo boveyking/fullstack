@@ -11,17 +11,17 @@ services:
       # Use Docker named volume for database persistence
       - app-data:/app/data
     environment:
-      - DATABASE_URL=sqlite:////app/data/familys.db
+      - DATABASE_URL=sqlite:////app/data/fullstack.db
       # Add your AWS credentials if needed
       # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       # - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     restart: unless-stopped
-    container_name: familys
+    container_name: fullstack
 
 # Define named volumes
 volumes:
   app-data:
     driver: local
-    name: familys-data
+    name: fullstack-data
 

@@ -28,10 +28,10 @@ echo.
 
 REM Check if volume exists, if not Docker will create it automatically
 echo Checking Docker volume...
-docker volume inspect familys-data >nul 2>&1
+docker volume inspect fullstack-data >nul 2>&1
 if errorlevel 1 (
     echo Creating Docker volume for database...
-    docker volume create familys-data
+    docker volume create fullstack-data
 )
 
 echo Building and starting the application...

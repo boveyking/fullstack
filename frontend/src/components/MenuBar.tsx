@@ -33,7 +33,7 @@ export function MenuBar({ onMenuClick }: MenuBarProps) {
 
   return (
     <header className="menu-bar">
-      <div className="logo" onClick={handleLogoClick}>Familys</div>
+      <div className="logo" onClick={handleLogoClick}>fullstack</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         {isAuthenticated && user?.logo && (
           <Popover 

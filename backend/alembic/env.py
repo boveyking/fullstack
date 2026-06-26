@@ -22,7 +22,7 @@ config = context.config
 # Set the database URL from environment or default
 from dotenv import load_dotenv
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./familys.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fullstack.db")
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.

@@ -25,7 +25,7 @@ export function NavigationOverlay({ isOpen, onClose }: NavigationOverlayProps) {
           onMouseDown={(e) => e.stopPropagation()}
           type="button"
         >
-          FAMILyS
+          fullstack
         </button>
         <div className="close-btn" onClick={onClose}></div>
       </div>

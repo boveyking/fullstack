@@ -32,7 +32,7 @@ def reset_alembic():
     
     # Get paths
     backend_dir = Path(__file__).parent
-    db_file = backend_dir / "familys.db"
+    db_file = backend_dir / "fullstack.db"
     versions_dir = backend_dir / "alembic" / "versions"
     
     print("=" * 60)

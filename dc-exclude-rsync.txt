@@ -17,7 +17,7 @@ frontend/build/
 *.gz
 *.sqlite
 *.sqlite3
-familys.db
+fullstack.db
 
 # Logs and temporary files
 *.log

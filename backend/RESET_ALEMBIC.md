@@ -48,7 +48,7 @@ Run this script **ONLY** in these scenarios:
 
 - Python environment with Alembic installed
 - Access to the backend directory
-- **Database file (`familys.db`) is OPTIONAL** - script works fine without it
+- **Database file (`fullstack.db`) is OPTIONAL** - script works fine without it
 
 ### Execution
 

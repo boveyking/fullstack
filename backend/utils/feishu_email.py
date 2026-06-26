@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 # 配置
 SMTP_SERVER = "smtp.feishu.cn"
 SMTP_PORT = 465  # SSL
-SENDER_EMAIL = "no_reply@familys.ai"
+SENDER_EMAIL = "no_reply@fullstack.ai"
 SENDER_PASSWORD = "Q8wUU31NitYlri9z"  # ⚠️ 不是登录密码！
 def send_email(to_email: str, subject: str, body: str):
     msg = MIMEMultipart()
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     to_email = "boveyking@outlook.com"
     subject = "Test Email"
-    body = "This is a test email sending from  Familys backend"
+    body = "This is a test email sending from  fullstack backend"
     success = send_email(to_email, subject, body)
     if success:
         print(f"Email successfully sent to {to_email}")

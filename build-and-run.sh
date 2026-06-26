@@ -35,9 +35,9 @@ echo ""
 
 # Check if volume exists, if not Docker will create it automatically
 echo "Checking Docker volume..."
-if ! docker volume inspect familys-data > /dev/null 2>&1; then
+if ! docker volume inspect fullstack-data > /dev/null 2>&1; then
     echo "Creating Docker volume for database..."
-    docker volume create familys-data
+    docker volume create fullstack-data
 fi
 
 echo "Building and starting the application..."

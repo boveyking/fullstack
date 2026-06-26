@@ -12,13 +12,13 @@ services:
       # Named volume for database
       - app-data:/app/data
     environment:
-      - DATABASE_URL=sqlite:////app/data/familys.db
+      - DATABASE_URL=sqlite:////app/data/fullstack.db
       # Production environment variables
       # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       # - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     restart: always
-    container_name: familys
+    container_name: fullstack
     logging:
       driver: "json-file"
       options:
@@ -28,7 +28,7 @@ services:
 volumes:
   app-data:
     driver: local
-    name: familys-data
+    name: fullstack-data
     # Optional: Specify driver options for better control
     # driver_opts:
     #   type: none
