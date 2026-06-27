@@ -302,8 +302,16 @@ async def reset_password_with_token(
 # Check if frontend dist directory exists (for Docker deployment)
 if frontend_dist.exists():
     # Mount static files (JS, CSS, images, etc.)
-    app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
     
+    # Only mount /img if the directory exists
+    img_dir = frontend_dist / "img"
+    if img_dir.exists():
+        app.mount("/img", StaticFiles(directory=str(img_dir)), name="images")
+
+  
     @app.get("/{full_path:path}")
     async def serve_frontend(full_path: str):
         """Serve frontend for all non-API routes (SPA fallback)"""

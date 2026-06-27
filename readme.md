@@ -5,6 +5,7 @@ This repository provide a quick ramp up for student to start web application usi
 - ssh
 - winget  
 - git
+- ssh client(Termora) : https://github.com/TermoraDev/termora
 
 ## clone repository  
 - git clone https://github.com/boveyking/fullstack.git
@@ -38,8 +39,15 @@ sudo chmod +x dcp.sh
 
 
 ## create python virtual environment
-- python -m venv .venv
+- `python -m venv .venv`
 
+- ubuntu :
+
+ `source  .venv/bin/activate`
+
+- windows:
+
+  `.venv/scripts/activate.bat`
 
 ## database configuration:
 - for local dev: change variable DATABASE_URL for the db name  in backend/.env.py  
@@ -47,10 +55,20 @@ sudo chmod +x dcp.sh
 - be careful, above 2 settings are in different format, in .env, use relative path, in docker, use volumes.
 
 ## lunch backend
+- cd backend, run the command to install all necessary libs:
+
+  `pip install -r requirements.txt`
 - select 'dev server backend' in terminal launch profile
 - check the output for any error for port 8000 in terminal
+- or run the command to run manuually:
+
+  `npm run dev`
 
 ## lunch frontend
+- run the following command to install nodejs packages:
+
+` npm install `
+
 - select 'dev server frontend' in terminal launch profile
 - open browser at http://localost:3000
 
@@ -94,14 +112,20 @@ this template already wired frontend and backend and database, dev can quickly c
 
 - IP, PWD, App Name in    dcp.sh/dcp.bat
  
-
+## nginx config
+- domain name
+- proxy to docker port
+- certificates for ssl
  
 
 ## deployment
 - dcp.sh /dcp.bat scripts to push local changes to deployment server
 - ./deply.sh to deploy
 
-## nginx config
-- domain name
-- proxy to docker port
-- certificates for ssl
+
+
+
+## deployment verification
+- `docker ps `  should list the docker we deployed
+
+- 
