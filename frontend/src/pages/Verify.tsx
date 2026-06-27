@@ -80,7 +80,7 @@ export default function Verify() {
         padding: '40px'
       }}>
         <div className="contact-popup-header">
-          <h2 className="contact-popup-title">Welcome to FAMILYs</h2>
+          <h2 className="contact-popup-title">Welcome to Fullstack</h2>
         </div>
 
         {/* Verifying State */}

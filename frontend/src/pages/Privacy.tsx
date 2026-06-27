@@ -19,7 +19,7 @@ export default function Privacy() {
           <div>
             <Title order={2} size="h3" mb="sm">1. Introduction</Title>
             <Text mb="md">
-              FAMILyS (Family Alliance for Multi-generational International Legacy and Sustainability) is committed 
+              Fullstack (Family Alliance for Multi-generational International Legacy and Sustainability) is committed 
               to protecting your privacy and ensuring the security of your personal and financial information. This 
               Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use 
               our multi-generational financial management platform.

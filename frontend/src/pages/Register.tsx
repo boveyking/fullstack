@@ -359,7 +359,7 @@ export default function Register() {
       {!isPendingModalOpen && (
         <div id='mian-content' className="register-popup-content">
         <div className="contact-popup-header">
-          <h2 className="contact-popup-title">{token === 'invite' ? ' Invitation Form FAMILyS' : 'Create Account with FAMILyS '}</h2>
+          <h2 className="contact-popup-title">{token === 'invite' ? ' Invitation Form Fullstack' : 'Create Account with Fullstack '}</h2>
         </div>
 
         <p className="contact-popup-description">

@@ -21,13 +21,26 @@ config = context.config
 
 # Set the database URL from environment (required — no default fallback)
 from dotenv import load_dotenv
-load_dotenv()
+
+# Load .env from the backend directory (parent of alembic/) explicitly,
+# so we don't depend on the current working directory to find it.
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BACKEND_DIR / ".env")
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError(
         "DATABASE_URL environment variable is not set. "
         "Please set it in your .env file or environment before running Alembic migrations."
     )
+
+# Resolve relative SQLite paths to absolute, relative to the backend directory.
+# This ensures the same DB file is used regardless of the current working directory.
+if DATABASE_URL.startswith("sqlite:///") and not DATABASE_URL.startswith("sqlite:////"):
+    db_path = DATABASE_URL[len("sqlite:///"):]
+    absolute_db_path = (BACKEND_DIR / db_path).resolve()
+    DATABASE_URL = f"sqlite:///{absolute_db_path}"
+
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.

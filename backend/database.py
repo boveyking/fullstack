@@ -5,7 +5,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load .env from the same directory as this file
-load_dotenv(Path(__file__).parent / ".env")
+BACKEND_DIR = Path(__file__).resolve().parent
+load_dotenv(BACKEND_DIR / ".env")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
@@ -13,6 +14,13 @@ if not DATABASE_URL:
         "DATABASE_URL environment variable is not set. "
         "Please set it in your .env file or environment before starting the application."
     )
+
+# Resolve relative SQLite paths to absolute, relative to the backend directory.
+# This ensures the same DB file is used regardless of the current working directory.
+if DATABASE_URL.startswith("sqlite:///") and not DATABASE_URL.startswith("sqlite:////"):
+    db_path = DATABASE_URL[len("sqlite:///"):]
+    absolute_db_path = (BACKEND_DIR / db_path).resolve()
+    DATABASE_URL = f"sqlite:///{absolute_db_path}"
 
 engine = create_engine(
     DATABASE_URL,

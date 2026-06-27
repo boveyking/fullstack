@@ -64,3 +64,13 @@ class User(Base):
 #     create_datetime = Column(DateTime, nullable=True)
 #     token = Column(String(length=60), nullable=True)
 #     organization = Column(String(length=100), nullable=True)
+
+
+class Game(Base):
+    __tablename__ = "tbl_game"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    game_name = Column(String(length=300), nullable=True)
+    published_date = Column(DateTime, nullable=True)
+    is_active = Column(Boolean, server_default='1', nullable=True)
+    max_score = Column(Integer, server_default='0', nullable=True)

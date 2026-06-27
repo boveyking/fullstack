@@ -11,6 +11,7 @@ import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Register from './pages/Register'
 import Login from './pages/login'
+import Oops from './pages/Oops'
 import Logout from './pages/logout'
 import UserMgr from './pages/UserMgr'
 import Terms from './pages/Terms'
@@ -42,6 +43,7 @@ function App() {
             <Route path="/logout" element={<Logout />} />
             <Route path="/usermgr" element={<UserMgr />} />
             <Route path="/term" element={<Terms />} />
+            <Route path="/oops" element={<Oops />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/invite" element={<Invite />} />
             <Route path="/verify/:token" element={<Verify />} />
