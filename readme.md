@@ -118,7 +118,13 @@ this template already wired frontend and backend and database, dev can quickly c
 - domain name
 - proxy to docker port
 - certificates for ssl
+- /etc/nginx/sites-enable/ -->folder for domain configuration files  
+- sudo nginx -t --> test if config file is valid
+- sudo service nginx start/stop/restart  -->start/stop/restart nginx service
  
+## environmnet variables setting
+- in local dev, environmnet variables are set in .env which won't be upload to server
+- in production, environmnet variables are set in Dockerfile
 
 ## deployment
 - dcp.sh /dcp.bat scripts to push local changes to deployment server
