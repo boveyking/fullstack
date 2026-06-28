@@ -53,11 +53,16 @@ __pycache__
 bk.bat
 dc.bat
 dcp.bat
+dcp-delta.ps1
+dcp.sh
 dc-exclude.txt
 dc-exclude-rsync.txt
 xcopy-exclude.txt
 bat.sh
-deploy.sh
+
+deploy.tar.gz
+.dcp_marker
+filelist.txt
 manage-volume.bat
 manage-volume.sh
 setup.bat
@@ -77,4 +82,5 @@ desktop.ini
 .kiro
 .wav
 vite.config.ts
-
+.dockerignore
+.gitignore

@@ -15,6 +15,7 @@ DB_NAME="aws_xray.db"
 DB_SOURCE="./backend/${DB_NAME}"
 DB_TARGET="./data/${DB_NAME}"
 
+
 if [ ! -f "$DB_TARGET" ]; then
     if [ -f "$DB_SOURCE" ]; then
         echo "Initializing database from existing backend database..."
@@ -29,11 +30,14 @@ fi
 
 # 3. Pull/Build and Start Containers
 echo "Building and starting Docker containers..."
-# Use docker-compose if available, otherwise docker compose
-if command -v docker-compose &> /dev/null; then
+# Prefer Docker Compose v2 plugin ("docker compose"); fall back to v1 binary
+if docker compose version &> /dev/null; then
+    docker compose up -d --build
+elif command -v docker-compose &> /dev/null; then
     docker-compose up -d --build
 else
-    docker compose up -d --build
+    echo "ERROR: Docker Compose not found (neither 'docker compose' nor 'docker-compose')."
+    exit 1
 fi
 
 if [ $? -eq 0 ]; then

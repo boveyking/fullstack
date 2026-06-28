@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { Container, Title, Text, Stack, Paper } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Container } from '@mantine/core';
 
 export default function Oops() {
   useEffect(() => {

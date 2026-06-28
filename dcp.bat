@@ -1,112 +1,86 @@
 @echo off
 setlocal enabledelayedexpansion
 
-goto :main
+REM ============================================================
+REM  dcp.bat - Delta deploy to remote server.
+REM
+REM  Packs changed files (since last deploy) into one tar.gz,
+REM  uploads it, and extracts remotely with sudo - directory
+REM  structure preserved automatically.
+REM
+REM  Usage:
+REM    dcp            Deploy delta files only
+REM    dcp full       Deploy ALL files (ignore marker)
+REM    dcp deploy     Deploy delta files, then run deploy.sh
+REM    dcp full deploy
+REM ============================================================
 
-:main
-REM === Server Configuration ===
-set "SSH_HOST=UPDATE_THIS_WITH_REAL_IP"
+REM === Server configuration ===
+set "SSH_HOST=54.169.214.129"
 set "SSH_USER=dev"
-set "APP=vpn"
-set "SSH_PASS=UPDATE_THIS_WITH_REAL_PWD"
-set "REMOTE_VPN_DIR=/home/!SSH_USER!/!APP!"
+set "APP=bking"
+set "SSH_PASS=V@ncouver"
 set "REMOTE_WEB_DIR=/var/www/!APP!"
+set "REMOTE_TMP=/home/!SSH_USER!/!APP!_deploy.tar.gz"
 
-REM === Detect plink.exe (PuTTY) for password-based SSH ===
-set "PLINK_EXE="
-where plink >nul 2>&1
-if !errorlevel! equ 0 (
-    set "PLINK_EXE=plink"
-) else (
-    if exist "C:\Program Files\PuTTY\plink.exe" set "PLINK_EXE=C:\Program Files\PuTTY\plink.exe"
-    if exist "C:\Program Files (x86)\PuTTY\plink.exe" set "PLINK_EXE=C:\Program Files (x86)\PuTTY\plink.exe"
+set "ROOT=%~dp0"
+if "!ROOT:~-1!"=="\" set "ROOT=!ROOT:~0,-1!"
+set "ARCHIVE=!ROOT!\deploy.tar.gz"
+set "MARKER=!ROOT!\.dcp_marker"
+
+REM === Parse args (order-independent: full / deploy) ===
+set "FULL="
+set "RUN_DEPLOY="
+for %%A in (%*) do (
+    if /i "%%~A"=="full"   set "FULL=-Full"
+    if /i "%%~A"=="deploy" set "RUN_DEPLOY=1"
 )
-if not defined PLINK_EXE (
-    echo ERROR: plink.exe not found. Install PuTTY or add plink to PATH.
+
+REM === 1. Pack delta files ===
+echo Detecting delta files...
+set "COUNT="
+for /f "usebackq tokens=2 delims==" %%C in (`powershell -NoProfile -ExecutionPolicy Bypass -File "!ROOT!\dcp-delta.ps1" -Root "!ROOT!" -Out "!ARCHIVE!" -Marker "!MARKER!" !FULL!`) do set "COUNT=%%C"
+
+if not defined COUNT (
+    echo ERROR: delta detection failed.
+    exit /b 1
+)
+if "!COUNT!"=="0" (
+    echo No delta files to deploy.
+    goto :deploy
+)
+echo Packed !COUNT! file^(s^) into deploy.tar.gz
+
+REM === 2. Record timestamp BEFORE upload (so concurrent edits aren't missed) ===
+for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('o')"`) do set "STAMP=%%D"
+
+REM === 3. Upload the single archive ===
+echo Uploading archive...
+pscp -pw %SSH_PASS% "!ARCHIVE!" %SSH_USER%@%SSH_HOST%:"!REMOTE_TMP!"
+if errorlevel 1 (
+    echo ERROR: upload failed.
     exit /b 1
 )
 
-REM 1. Extract TARGET_DIR from dc.bat dynamically
-set "TARGET_DRIVE="
-for /f "usebackq tokens=2 delims==" %%T in (`findstr /b "set \"TARGET_DIR=" dc.bat`) do (
-    set "TARGET_DIR_VAL=%%T"
-    REM Strip trailing quote
-    set "TARGET_DIR_VAL=!TARGET_DIR_VAL:"=!"
-    REM Extract drive letter (first 2 chars, e.g. "D:")
-    set "TARGET_DRIVE=!TARGET_DIR_VAL:~0,2!"
-)
-if not defined TARGET_DRIVE (
-    echo ERROR: Could not detect TARGET_DIR drive from dc.bat
+REM === 4. Extract remotely (sudo), preserving structure; clean up temp ===
+echo Extracting on remote...
+echo y | plink -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "echo %SSH_PASS% | sudo -S mkdir -p !REMOTE_WEB_DIR! && echo %SSH_PASS% | sudo -S tar -xzf !REMOTE_TMP! -C !REMOTE_WEB_DIR! && rm -f !REMOTE_TMP!"
+if errorlevel 1 (
+    echo ERROR: remote extract failed. Marker NOT updated.
     exit /b 1
 )
-echo Detected target drive: %TARGET_DRIVE%
 
-REM 2. Run dc.bat and output console result to file ttt
-echo Running dc.bat to copy deployment files...
-call dc.bat > ttt
-type ttt
+REM === 5. Success: advance marker and clean local archive ===
+> "!MARKER!" echo !STAMP!
+del "!ARCHIVE!" 2>nul
+echo Deploy complete.
 
-REM 3. Collect files to upload into a temporary file
-echo Collecting files to upload...
-echo. > upload_list.txt
-
-for /f "usebackq delims=" %%A in ("ttt") do (
-    set "line=%%A"
-    
-    REM Check if the line contains the target drive letter and is not empty
-    echo "!line!" | findstr "%TARGET_DRIVE%" >nul
-    if !errorlevel! equ 0 (
-        set "src_file=!line:*%TARGET_DRIVE%=!"
-        if not "!src_file!"=="" (
-            echo !src_file! >> upload_list.txt
-        )
-    )
-)
-
-REM 4. Process the collected files
-echo Processing collected files for upload...
-for /f "usebackq delims=" %%B in (upload_list.txt) do (
-    call :upload_file "%%B"
-)
-
-REM 5. Clean up temporary file
-del upload_list.txt
-
-echo.
-echo Checking if files were uploaded...
-echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "ls -la %REMOTE_VPN_DIR%"
-
-echo.
-echo Copying remote folder tree %REMOTE_VPN_DIR%/ to %REMOTE_WEB_DIR%/...
-echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "sudo cp -rf %REMOTE_VPN_DIR%/* %REMOTE_WEB_DIR%/ 2>/dev/null || echo 'No files to copy or copy failed'"
-echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "sudo rm -rf %REMOTE_VPN_DIR%/* 2>/dev/null || echo 'No files to clean up'"
-
-set "RUN_DEPLOY=0"
-if /i "%~1"=="deploy" set "RUN_DEPLOY=1"
-
-if "!RUN_DEPLOY!"=="1" (
+:deploy
+if defined RUN_DEPLOY (
     echo.
-    echo Running deploy.sh in %REMOTE_WEB_DIR%...
-    echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "cd %REMOTE_WEB_DIR% && sudo bash deploy.sh"
+    echo Running deploy.sh in !REMOTE_WEB_DIR! ...
+    echo y | plink -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "cd !REMOTE_WEB_DIR! && echo %SSH_PASS% | sudo -S bash deploy.sh"
 )
 
+endlocal
 goto :eof
-
-REM Upload subroutine
-:upload_file
-set "src=%~1"
-REM Normalize: strip spaces (paths here shouldn't contain spaces)
-set "src=%src: =%"
-if "%src%"=="" exit /b 0
-
-REM Replace backslashes with forward slashes for remote path
-set "remote=%src:\=/%"
-
-echo Processing %src%...
-
-REM Create remote directory structure first
-echo y | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "mkdir -p \"$(dirname '%REMOTE_VPN_DIR%/%remote%')\""
-
-echo Uploading "%src%" to "%REMOTE_VPN_DIR%/%remote%"...
-echo y | "%PLINK_EXE%" -pw %SSH_PASS% -scp %src% %SSH_USER%@%SSH_HOST%:%REMOTE_VPN_DIR%/%remote%
-exit /b 0

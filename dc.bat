@@ -1,5 +1,5 @@
 @echo off
-set "TARGET_DIR=D:\vpn-deployment"
+set "TARGET_DIR=D:\fullstack-deployment"
 echo ========================================
 echo Copying deployment files to %TARGET_DIR%
 echo ========================================
