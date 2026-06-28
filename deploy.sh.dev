@@ -28,7 +28,18 @@ else
     echo "Database already exists in data volume. Using existing data."
 fi
 
-# 3. Pull/Build and Start Containers
+# 3. Copy nginx config and restart
+echo "Copying nginx config files..."
+sudo cp ./backend/*.conf /etc/nginx/sites-enabled/
+echo "Testing nginx configuration..."
+if ! sudo nginx -t; then
+    echo "ERROR: nginx configuration invalid. Aborting deployment."
+    exit 1
+fi
+echo "Restarting nginx..."
+sudo systemctl restart nginx
+
+# 4. Pull/Build and Start Containers
 echo "Building and starting Docker containers..."
 # Prefer Docker Compose v2 plugin ("docker compose"); fall back to v1 binary
 if docker compose version &> /dev/null; then
