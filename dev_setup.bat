@@ -59,10 +59,10 @@ call :replace "!ROOT!\dcp.sh" "#ssh_password#" "!ssh_password!"
 call :replace "!ROOT!\dcp.sh" "#ssh_ip#" "!ssh_ip!"
 call :replace "!ROOT!\dcp.sh" "#ssh_user#" "!ssh_user!"
 
-REM === Rename fullstack.conf -> {app_name}.conf ===
+REM === Copy fullstack.conf -> {app_name}.conf ===
 if exist "!ROOT!\backend\fullstack.conf" (
-    rename "!ROOT!\backend\fullstack.conf" "!app_name!.conf"
-    echo Renamed backend\fullstack.conf to backend\!app_name!.conf
+    copy /Y "!ROOT!\backend\fullstack.conf" "!ROOT!\backend\!app_name!.conf" >nul
+    echo Copied backend\fullstack.conf to backend\!app_name!.conf
 )
 
 echo.
@@ -81,7 +81,9 @@ if exist "%~1" (
 goto :eof
 
 REM --- replace <file> <old> <new> via PowerShell ---
+REM Literal .Replace() (no regex) + WriteAllText preserves original
+REM line endings (LF stays LF) and handles special chars in values.
 :replace
 powershell -NoProfile -Command ^
-    "(Get-Content '%~1') -replace [regex]::Escape('%~2'), '%~3' | Set-Content '%~1'"
+    "$c=[IO.File]::ReadAllText('%~1'); $c=$c.Replace('%~2','%~3'); [IO.File]::WriteAllText('%~1',$c)"
 goto :eof

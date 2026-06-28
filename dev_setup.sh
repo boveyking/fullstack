@@ -79,10 +79,10 @@ replace "${ROOT}/dcp.sh" "#ssh_password#" "$ssh_password"
 replace "${ROOT}/dcp.sh" "#ssh_ip#"       "$ssh_ip"
 replace "${ROOT}/dcp.sh" "#ssh_user#"     "$ssh_user"
 
-# === Rename fullstack.conf -> {app_name}.conf ===
+# === Copy fullstack.conf -> {app_name}.conf ===
 if [[ -f "${ROOT}/backend/fullstack.conf" ]]; then
-    mv "${ROOT}/backend/fullstack.conf" "${ROOT}/backend/${app_name}.conf"
-    echo "Renamed backend/fullstack.conf to backend/${app_name}.conf"
+    cp -f "${ROOT}/backend/fullstack.conf" "${ROOT}/backend/${app_name}.conf"
+    echo "Copied backend/fullstack.conf to backend/${app_name}.conf"
 fi
 
 echo ""
