@@ -111,6 +111,8 @@ this template already wired frontend and backend and database, dev can quickly c
 - TARGET_DIR in dc.bat / dc.sh
 
 - IP, PWD, App Name in    dcp.sh/dcp.bat
+- run dc.bat , which copy newly modified files to remote server
+- run dc.bat deploy , which copy and deploy
  
 ## nginx config
 - domain name

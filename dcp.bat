@@ -81,6 +81,15 @@ echo Copying remote folder tree %REMOTE_VPN_DIR%/ to %REMOTE_WEB_DIR%/...
 echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "sudo cp -rf %REMOTE_VPN_DIR%/* %REMOTE_WEB_DIR%/ 2>/dev/null || echo 'No files to copy or copy failed'"
 echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "sudo rm -rf %REMOTE_VPN_DIR%/* 2>/dev/null || echo 'No files to clean up'"
 
+set "RUN_DEPLOY=0"
+if /i "%~1"=="deploy" set "RUN_DEPLOY=1"
+
+if "!RUN_DEPLOY!"=="1" (
+    echo.
+    echo Running deploy.sh in %REMOTE_WEB_DIR%...
+    echo %SSH_PASS% | "%PLINK_EXE%" -pw %SSH_PASS% %SSH_USER%@%SSH_HOST% "cd %REMOTE_WEB_DIR% && sudo bash deploy.sh"
+)
+
 goto :eof
 
 REM Upload subroutine

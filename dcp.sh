@@ -101,3 +101,14 @@ echo ""
 echo "Copying remote folder tree ${REMOTE_VPN_DIR}/ to ${REMOTE_WEB_DIR}/..."
 remote_ssh "sudo cp -rf ${REMOTE_VPN_DIR}/* ${REMOTE_WEB_DIR}/ 2>/dev/null || echo 'No files to copy or copy failed'"
 remote_ssh "sudo rm -rf ${REMOTE_VPN_DIR}/* 2>/dev/null || echo 'No files to clean up'"
+
+RUN_DEPLOY=0
+if [[ "${1:-}" == "deploy" ]]; then
+    RUN_DEPLOY=1
+fi
+
+if [[ "$RUN_DEPLOY" == "1" ]]; then
+    echo ""
+    echo "Running deploy.sh in ${REMOTE_WEB_DIR}..."
+    remote_ssh "cd ${REMOTE_WEB_DIR} && sudo bash deploy.sh"
+fi
