@@ -21,7 +21,7 @@ SSH_HOST="#ssh_ip#"
 SSH_USER="#ssh_user#"
 APP="#app_name#"
 SSH_PASS="#ssh_password#"
-REMOTE_WEB_DIR="/var/www/${APP}"
+REMOTE_WEB_DIR="/var/${APP}"
 REMOTE_TMP="/home/${SSH_USER}/${APP}_deploy.tar.gz"
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
