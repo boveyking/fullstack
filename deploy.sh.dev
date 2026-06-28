@@ -45,6 +45,8 @@ sudo systemctl restart nginx
 # 4. Pull/Build and Start Containers
 echo "Building and starting Docker containers..."
 # Prefer Docker Compose v2 plugin ("docker compose"); fall back to v1 binary
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
 if docker compose version &> /dev/null; then
     docker compose up -d --build
 elif command -v docker-compose &> /dev/null; then
