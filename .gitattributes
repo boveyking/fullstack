@@ -1,0 +1,7 @@
+# Default: normalize line endings on commit
+* text=auto
+
+# Shell scripts must stay LF
+*.sh text eol=lf
+*.sh.dev text eol=lf
+deploy.sh text eol=lf
