@@ -130,4 +130,12 @@ this template already wired frontend and backend and database, dev can quickly c
 ## deployment verification
 - `docker ps `  should list the docker we deployed
 
-- 
+## command command
+- pwd  -->show current folder
+- cd path -->chang folder to path
+- mv src tgt -->move file or rename file
+- docker ps  -->list running docker instance
+- docker compose up -d --build  -->build docker
+- docker compose up -d -->luanch docker
+- docker compose down  --> shutdown docker
+

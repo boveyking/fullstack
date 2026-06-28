@@ -10,10 +10,7 @@ if [ ! -d "data" ]; then
     mkdir -p data
 fi
 
-# 2. Check and copy database if it doesn't exist in data volume source
-DB_NAME="aws_xray.db"
-DB_SOURCE="./backend/${DB_NAME}"
-DB_TARGET="./data/${DB_NAME}"
+ 
 
 
 if [ ! -f "$DB_TARGET" ]; then
