@@ -19,7 +19,7 @@ REM === Server configuration ===
 set "SSH_HOST=54.169.214.129"
 set "SSH_USER=dev"
 set "APP=bking"
-set "SSH_PASS=V@ncouver"
+set "SSH_PASS=pwd"
 set "REMOTE_WEB_DIR=/var/www/!APP!"
 set "REMOTE_TMP=/home/!SSH_USER!/!APP!_deploy.tar.gz"
 

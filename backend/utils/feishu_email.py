@@ -1,13 +1,14 @@
+import os
 import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# 配置
-SMTP_SERVER = "smtp.feishu.cn"
-SMTP_PORT = 465  # SSL
-SENDER_EMAIL = "no_reply@fullstack.ai"
-SENDER_PASSWORD = "Q8wUU31NitYlri9z"  # ⚠️ 不是登录密码！
+# 配置 (secrets loaded from environment / .env)
+SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.feishu.cn")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))  # SSL
+SENDER_EMAIL = os.getenv("SENDER_EMAIL", "no_reply@fullstack.ai")
+SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")  # ⚠️ 不是登录密码！set in .env
 def send_email(to_email: str, subject: str, body: str):
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
