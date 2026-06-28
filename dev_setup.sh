@@ -21,13 +21,14 @@ copydev() {
 
 # --- in-place LITERAL replace (no regex; safe for / & @ $ etc.) ---
 replace() {
-    local file="$1" old="$2" new="$3"
-    local tmp line
-    tmp="$(mktemp)"
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        printf '%s\n' "${line//"$old"/"$new"}"
-    done < "$file" > "$tmp"
-    mv "$tmp" "$file"
+    python3 -c "
+import sys
+with open(sys.argv[1], 'r') as f:
+    c = f.read()
+c = c.replace(sys.argv[2], sys.argv[3])
+with open(sys.argv[1], 'w') as f:
+    f.write(c)
+" "$1" "$2" "$3"
 }
 
 echo "=== Copying .dev templates ==="
