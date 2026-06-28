@@ -315,10 +315,6 @@ if frontend_dist.exists():
     @app.get("/{full_path:path}")
     async def serve_frontend(full_path: str):
         """Serve frontend for all non-API routes (SPA fallback)"""
-        # Skip API routes
-        if full_path.startswith("api/"):
-            raise HTTPException(status_code=404, detail="Not found")
-        
         # Try to serve the requested file
         file_path = frontend_dist / full_path
         if file_path.is_file():

@@ -88,9 +88,9 @@
 .nav-links li a {
   color: #888;
   text-decoration: none;
-  font-size: 3.5rem;
+  font-size: 1.5rem;
   font-weight: 400;
-  font-family: var(--accent-font);
+   
   transition: color 0.3s ease;
   display: inline-block;
 }

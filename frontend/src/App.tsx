@@ -48,6 +48,7 @@ function App() {
             <Route path="/invite" element={<Invite />} />
             <Route path="/verify/:token" element={<Verify />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<Oops />} />
           </Routes>
           <Footer onContactClick={() => setIsContactOpen(true)} />
           <NavigationOverlay 
