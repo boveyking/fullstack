@@ -64,6 +64,8 @@ REM === Copy fullstack.conf -> {app_name}.conf ===
 if exist "!ROOT!\backend\fullstack.conf" (
     copy /Y "!ROOT!\backend\fullstack.conf" "!ROOT!\backend\!app_name!.conf" >nul
     echo Copied backend\fullstack.conf to backend\!app_name!.conf
+    del "!ROOT!\backend\fullstack.conf" >nul
+    echo Removed intermediate backend\fullstack.conf
 )
 
 echo.

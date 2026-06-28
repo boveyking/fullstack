@@ -30,6 +30,9 @@ fi
 
 # 3. Copy nginx config and restart
 echo "Copying nginx config files..."
+for f in ./backend/*.conf; do
+    sed -i 's/\r$//' "$f"
+done
 sudo cp ./backend/*.conf /etc/nginx/sites-enabled/
 echo "Testing nginx configuration..."
 if ! sudo nginx -t; then

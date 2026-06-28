@@ -84,6 +84,8 @@ replace "${ROOT}/dcp.sh" "#ssh_user#"     "$ssh_user"
 if [[ -f "${ROOT}/backend/fullstack.conf" ]]; then
     cp -f "${ROOT}/backend/fullstack.conf" "${ROOT}/backend/${app_name}.conf"
     echo "Copied backend/fullstack.conf to backend/${app_name}.conf"
+    rm -f "${ROOT}/backend/fullstack.conf"
+    echo "Removed intermediate backend/fullstack.conf"
 fi
 
 echo ""
