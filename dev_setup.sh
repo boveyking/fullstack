@@ -37,6 +37,7 @@ copydev "${ROOT}/deploy.sh.dev"              "${ROOT}/deploy.sh"
 copydev "${ROOT}/backend/fullstack.conf.dev" "${ROOT}/backend/fullstack.conf"
 copydev "${ROOT}/dcp.bat.dev"                "${ROOT}/dcp.bat"
 copydev "${ROOT}/dcp.sh.dev"                 "${ROOT}/dcp.sh"
+copydev "${ROOT}/backend/.env.dev"           "${ROOT}/backend/.env"
 
 echo ""
 echo "=== Project Setup ==="

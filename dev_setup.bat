@@ -17,6 +17,7 @@ call :copydev "!ROOT!\deploy.sh.dev"               "!ROOT!\deploy.sh"
 call :copydev "!ROOT!\backend\fullstack.conf.dev"  "!ROOT!\backend\fullstack.conf"
 call :copydev "!ROOT!\dcp.bat.dev"                 "!ROOT!\dcp.bat"
 call :copydev "!ROOT!\dcp.sh.dev"                  "!ROOT!\dcp.sh"
+call :copydev "!ROOT!\backend\.env.dev"            "!ROOT!\backend\.env"
 
 echo.
 echo === Project Setup ===
