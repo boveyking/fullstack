@@ -3,12 +3,23 @@ setlocal enabledelayedexpansion
 
 REM ============================================================
 REM  dev_setup.bat - Interactive project setup.
-REM  Replaces #placeholder# values across config files.
+REM  Copies *.dev templates to real files, then replaces
+REM  #placeholder# values with user input.
 REM ============================================================
 
-echo === Project Setup ===
-echo.
+set "ROOT=%~dp0"
+if "!ROOT:~-1!"=="\" set "ROOT=!ROOT:~0,-1!"
 
+echo === Copying .dev templates ===
+call :copydev "!ROOT!\docker-compose.yml.dev"      "!ROOT!\docker-compose.yml"
+call :copydev "!ROOT!\Dockerfile.dev"              "!ROOT!\Dockerfile"
+call :copydev "!ROOT!\deploy.sh.dev"               "!ROOT!\deploy.sh"
+call :copydev "!ROOT!\backend\fullstack.conf.dev"  "!ROOT!\backend\fullstack.conf"
+call :copydev "!ROOT!\dcp.bat.dev"                 "!ROOT!\dcp.bat"
+call :copydev "!ROOT!\dcp.sh.dev"                  "!ROOT!\dcp.sh"
+
+echo.
+echo === Project Setup ===
 set /p "app_name=app_name: "
 set /p "domain=domain: "
 set /p "unique_port=unique_port: "
@@ -17,43 +28,7 @@ set /p "ssh_user=ssh_user: "
 set /p "ssh_password=ssh_password: "
 
 echo.
-echo Renaming .dev files...
-
-set "ROOT=%~dp0"
-if "!ROOT:~-1!"=="\" set "ROOT=!ROOT:~0,-1!"
-
-for %%F in (
-    "docker-compose.yml"
-    "Dockerfile"
-    "deploy.sh"
-    "dcp.bat"
-    "dcp.sh"
-) do (
-    if exist "!ROOT!\%%~F.dev" (
-        if exist "!ROOT!\%%~F" del "!ROOT!\%%~F"
-        rename "!ROOT!\%%~F.dev" "%%~F"
-        echo   %%~F.dev -> %%~F
-    )
-)
-if exist "!ROOT!\backend\fullstack.conf.dev" (
-    if exist "!ROOT!\backend\fullstack.conf" del "!ROOT!\backend\fullstack.conf"
-    rename "!ROOT!\backend\fullstack.conf.dev" "fullstack.conf"
-    echo   backend\fullstack.conf.dev -> backend\fullstack.conf
-)
-
-echo.
 echo Applying values...
-
-REM --- Helper: replace in file via PowerShell ---
-REM Usage: call :replace <file> <old> <new>
-goto :main
-
-:replace
-powershell -NoProfile -Command ^
-    "(Get-Content '%~1') -replace [regex]::Escape('%~2'), '%~3' | Set-Content '%~1'"
-goto :eof
-
-:main
 
 REM === docker-compose.yml ===
 call :replace "!ROOT!\docker-compose.yml" "#unique_port#" "!unique_port!"
@@ -93,3 +68,20 @@ if exist "!ROOT!\backend\fullstack.conf" (
 echo.
 echo Setup complete.
 endlocal
+goto :eof
+
+REM --- copy <src> <dst> (only if src exists) ---
+:copydev
+if exist "%~1" (
+    copy /Y "%~1" "%~2" >nul
+    echo   %~nx1 -^> %~nx2
+) else (
+    echo   SKIP: %~nx1 not found
+)
+goto :eof
+
+REM --- replace <file> <old> <new> via PowerShell ---
+:replace
+powershell -NoProfile -Command ^
+    "(Get-Content '%~1') -replace [regex]::Escape('%~2'), '%~3' | Set-Content '%~1'"
+goto :eof
