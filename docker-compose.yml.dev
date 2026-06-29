@@ -9,10 +9,8 @@ services:
       # Use Docker named volume for database persistence
       - app-data:/app/data
     # DATABASE_URL is set in Dockerfile as default; override here only if needed
-    # environment:
-    #   - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-    #   - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    #   - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    env_file:
+      - .env.prod
     restart: unless-stopped
     container_name: #container_name#
     logging:

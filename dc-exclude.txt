@@ -32,7 +32,8 @@ audio_files\
 content\
 
 # Environment and secrets
-
+.env
+.env.prod
 .venv
 venv\
 env\

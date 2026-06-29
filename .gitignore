@@ -15,6 +15,7 @@ build/
 
 # Environment variables
 .env
+.env.prod
 
 # Database
 *.db
