@@ -41,6 +41,8 @@ export default function Chat() {
   const handleSend = () => {
     const text = input.trim()
     if (!text) return
+    const msg: ChatMessage = { user: username, text, ts: Date.now() }
+    setMessages((prev) => [...prev, msg])
     send(text)
     setInput('')
   }
@@ -91,13 +93,19 @@ export default function Chat() {
           {messages.length === 0 && (
             <div style={styles.empty}>No messages yet. Say something!</div>
           )}
-          {messages.map((m, i) => (
-            <div key={i} style={styles.messageRow}>
-              <span style={styles.msgUser}>{m.user}</span>
-              <span style={styles.msgText}>{m.text}</span>
-              <span style={styles.msgTime}>{new Date(m.ts).toLocaleTimeString()}</span>
-            </div>
-          ))}
+          {messages.map((m, i) => {
+            const isMine = m.user === username
+            return (
+              <div key={i} style={{ ...styles.messageRow, justifyContent: isMine ? 'flex-end' : 'flex-start' }}>
+                {!isMine && <span style={styles.msgUser}>{m.user}</span>}
+                <div style={{ ...styles.bubble, ...(isMine ? styles.bubbleMine : styles.bubbleOther) }}>
+                  <span style={styles.msgText}>{m.text}</span>
+                  <span style={styles.msgTime}>{new Date(m.ts).toLocaleTimeString()}</span>
+                </div>
+                {isMine && <span style={styles.msgUser}>{m.user}</span>}
+              </div>
+            )
+          })}
           <div ref={bottomRef} />
         </div>
 
@@ -224,8 +232,23 @@ const styles: Record<string, React.CSSProperties> = {
   messageRow: {
     display: 'flex',
     gap: 8,
-    alignItems: 'baseline',
-    flexWrap: 'wrap',
+    alignItems: 'flex-end',
+  },
+  bubble: {
+    maxWidth: '65%',
+    padding: '8px 12px',
+    borderRadius: 12,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+  },
+  bubbleMine: {
+    background: '#0f3460',
+    borderBottomRightRadius: 2,
+  },
+  bubbleOther: {
+    background: '#2a2a3e',
+    borderBottomLeftRadius: 2,
   },
   msgUser: {
     fontWeight: 700,
@@ -235,12 +258,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   msgText: {
     fontSize: 14,
-    flex: 1,
   },
   msgTime: {
     fontSize: 11,
-    color: '#555',
-    minWidth: 'max-content',
+    color: '#888',
+    alignSelf: 'flex-end',
   },
   inputRow: {
     display: 'flex',

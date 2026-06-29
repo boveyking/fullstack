@@ -29,11 +29,13 @@ class ChannelManager:
                 del self.channels[channel]
         logger.info(f"WS disconnected: channel={channel}")
 
-    async def broadcast(self, channel: str, message: dict):
+    async def broadcast(self, channel: str, message: dict, exclude: WebSocket | None = None):
         if channel not in self.channels:
             return
         dead = []
         for ws in self.channels[channel]:
+            if ws is exclude:
+                continue
             try:
                 await ws.send_text(json.dumps(message))
             except Exception:

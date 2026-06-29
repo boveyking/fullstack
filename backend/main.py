@@ -305,7 +305,7 @@ async def websocket_chat(websocket: WebSocket, channel: str):
     try:
         while True:
             data = await websocket.receive_json()
-            await manager.broadcast(channel, data)
+            await manager.broadcast(channel, data, exclude=websocket)
     except WebSocketDisconnect:
         manager.disconnect(channel, websocket)
 
