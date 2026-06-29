@@ -6,7 +6,7 @@ _backend_dir = str(Path(__file__).resolve().parent)
 if _backend_dir not in sys.path:
     sys.path.insert(0, _backend_dir)
 
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import logging
 from database import init_db, get_db
+from communication import manager
  
 from models.schema import (
     UserRegisterRequest,
@@ -296,6 +297,17 @@ async def reset_password_with_token(
             result=False,
             message=f"Failed to reset password: {str(e)}"
         )
+
+
+@app.websocket("/ws/chat/{channel}")
+async def websocket_chat(websocket: WebSocket, channel: str):
+    await manager.connect(channel, websocket)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            await manager.broadcast(channel, data)
+    except WebSocketDisconnect:
+        manager.disconnect(channel, websocket)
 
 
 # Serve static files from frontend build

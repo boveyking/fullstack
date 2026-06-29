@@ -20,7 +20,7 @@ import Invite from './pages/Invite'
 import Verify from './pages/Verify'
 import Profile from './pages/Profile'
 import ResetPassword from './pages/ResetPassword'
- 
+import Chat from './pages/Chat'
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -48,6 +48,7 @@ function App() {
             <Route path="/invite" element={<Invite />} />
             <Route path="/verify/:token" element={<Verify />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="*" element={<Oops />} />
           </Routes>
           <Footer onContactClick={() => setIsContactOpen(true)} />

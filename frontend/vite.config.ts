@@ -7,15 +7,13 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
-        ws: false,
-        bypass(req) {
-          // Don't proxy WebSocket connections - return the original URL to bypass proxy
-          if (req.url?.startsWith('/api/ws')) {
-            return req.url;
-          }
-        },
+      },
+      '/ws': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        ws: true,
       }
     }
   }
