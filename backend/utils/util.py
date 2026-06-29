@@ -7,7 +7,7 @@ import sys
 import logging
 
 email_token="0711dd477c989432dcf8c90f762936ea"
-from utils.feishu_email import send_email
+from utils.email import send_email
  
 sender_email="no_reply@fullstack.ai"
 accept_invitation_template="""
