@@ -125,16 +125,7 @@ this template already wired frontend and backend and database, dev can quickly c
 ## environmnet variables setting
 - in local dev, environmnet variables are set in .env which won't be upload to server
 - in production, environmnet variables are set in Dockerfile
-
-## deployment
-- dcp.sh /dcp.bat scripts to push local changes to deployment server
-- ./deply.sh to deploy
-
-
-
-
-## deployment verification
-- `docker ps `  should list the docker we deployed
+ 
 
 ## command command
 - pwd  -->show current folder
@@ -145,3 +136,16 @@ this template already wired frontend and backend and database, dev can quickly c
 - docker compose up -d -->luanch docker
 - docker compose down  --> shutdown docker
 
+## quick  start for deployment
+- make or choose a workspace folder
+- enter workspace folder
+- `git clone https://github.com/boveyking/fullstack.git`
+- `cd fullstack`
+- `chmod +x *.sh`  (linux )
+- run dev setup scripts
+  - `./dev_setup.sh` (linux )
+  - `dev_setup`   (windows )
+- input the variables in console
+- `chmod +x *.sh`  (linux )!important
+- `dcp deploy`   or  `./dcp.sh deploy`
+- open browser and point to your domain, the website should go live
