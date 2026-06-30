@@ -55,6 +55,7 @@ export function useWebSocket({ channel, username, onMessage }: UseWebSocketOptio
       }
 
       ws.onclose = () => {
+        if (wsRef.current !== ws) return
         setConnected(false)
         wsRef.current = null
         if (!destroyed.current) {
