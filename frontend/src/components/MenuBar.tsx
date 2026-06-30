@@ -2,7 +2,7 @@ import './MenuBar.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Tooltip, Popover, Button, Text, Stack, ActionIcon, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Github } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface MenuBarProps {
@@ -134,6 +134,23 @@ export function MenuBar({ onMenuClick }: MenuBarProps) {
             </Avatar>
           </Tooltip>
         )}
+        <Tooltip label="View on GitHub" withArrow>
+          <a
+            href="https://github.com/boveyking/fullstack"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--text-color)', display: 'flex', alignItems: 'center' }}
+          >
+            <ActionIcon
+              variant="subtle"
+              size="lg"
+              style={{ color: 'var(--text-color)' }}
+              aria-label="GitHub"
+            >
+              <Github size={20} />
+            </ActionIcon>
+          </a>
+        </Tooltip>
         <Tooltip label={`Switch to ${colorScheme === 'dark' ? 'light' : 'dark'} mode`} withArrow>
           <ActionIcon
             variant="subtle"
