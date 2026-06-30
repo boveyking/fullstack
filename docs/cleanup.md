@@ -2,7 +2,7 @@
 
 - app_name you provide when setup dev is the working folder in remote server.
 - ssh to remote server 
-  - `ssh {ssh_user}@{ssh_ip}
+  - `ssh {ssh_user}@{ssh_ip}`
   - `cd /var/www/{app_name}` 
   - `docker compose down`
   - `cd ..`
