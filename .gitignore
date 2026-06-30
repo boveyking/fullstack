@@ -12,7 +12,12 @@ ENV/
 *.egg-info/
 dist/
 build/
-
+Dockerfile
+backend/fullstack.conf
+dcp.bat
+dcp.sh
+deploy.sh
+docker-compose.yml
 # Environment variables
 .env
 .env.prod
