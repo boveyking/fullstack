@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(2, 2, 2, 0.99);
+  background-color: var(--bg-color);
 }
 
 .logo {
@@ -16,11 +16,36 @@
   font-size: 2rem;
   letter-spacing: 2px;
   cursor: pointer;
-  color: #ffffff;
+  color: var(--text-color);
+  flex-shrink: 0;
 }
 
-.menu-trigger {
+/* Horizontal nav links - centered between logo and user area */
+.nav-horizontal {
   display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-horizontal-link {
+  color: var(--muted-text);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-horizontal-link:hover {
+  color: var(--text-color);
+}
+
+/* Hamburger menu trigger */
+.menu-trigger {
+  display: none;
   flex-direction: column;
   justify-content: space-between;
   width: 35px;
@@ -32,13 +57,21 @@
   display: block;
   width: 100%;
   height: 2px;
-  background-color: white;
+  background-color: var(--text-color);
   border-radius: 2px;
 }
 
+/* Mobile: show hamburger, hide horizontal nav */
 @media (max-width: 768px) {
   .menu-bar {
     padding: 1.5rem 2rem;
   }
-}
 
+  .nav-horizontal {
+    display: none;
+  }
+
+  .menu-trigger {
+    display: flex;
+  }
+}

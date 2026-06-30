@@ -2,12 +2,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import { MenuBar } from './components/MenuBar'
 import { Footer } from './components/Footer'
-import { Starfield } from './components/Starfield'
+
 import { NavigationOverlay } from './components/NavigationOverlay'
 import { ContactPopup } from './components/ContactPopup'
 import { ScrollToTop } from './components/ScrollToTop'
 import { AuthProvider } from './contexts/AuthContext'
-import Home from './pages/Home'
+import Demo from './pages/Demo'
 import Dashboard from './pages/Dashboard'
 import Register from './pages/Register'
 import Login from './pages/login'
@@ -16,11 +16,12 @@ import Logout from './pages/logout'
 import UserMgr from './pages/UserMgr'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
-import Invite from './pages/Invite'
+
 import Verify from './pages/Verify'
 import Profile from './pages/Profile'
 import ResetPassword from './pages/ResetPassword'
 import Chat from './pages/Chat'
+import Home from './pages/Home'
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -31,11 +32,12 @@ function App() {
       <Router>
         <ScrollToTop />
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Starfield />
+         
           <MenuBar onMenuClick={() => setIsNavOpen(true)} />
           <Routes>
-            <Route path="/" element={<Home onContactClick={() => setIsContactOpen(true)} />} />
-            <Route path="/home" element={<Home   />} />
+            <Route path="/" element={<Home   />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/demo" element={<Demo   />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/register/:token" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -45,7 +47,7 @@ function App() {
             <Route path="/term" element={<Terms />} />
             <Route path="/oops" element={<Oops />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route path="/invite" element={<Invite />} />
+            
             <Route path="/verify/:token" element={<Verify />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/chat" element={<Chat />} />

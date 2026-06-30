@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { useComputedColorScheme } from '@mantine/core';
 
 export function Starfield() {
+  const colorScheme = useComputedColorScheme('dark');
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -46,11 +48,13 @@ export function Starfield() {
     function animateStars() {
       if (!ctx) return; // Guard against null context
       
-      // Clear with slight fade effect for trails, or solid black
-      ctx.fillStyle = 'black';
+      // Clear with background color based on theme
+      const bgColor = colorScheme === 'dark' ? '#000000' : '#ffffff';
+      ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
       
-      ctx.fillStyle = 'white';
+      // Stars color: white in dark mode, dark in light mode
+      ctx.fillStyle = colorScheme === 'dark' ? 'white' : '#333';
       
       for(let i = 0; i < numStars; i++) {
         let star = stars[i];
@@ -113,7 +117,7 @@ export function Starfield() {
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, []);
+  }, [colorScheme]);
 
   return (
     <canvas 
@@ -126,7 +130,7 @@ export function Starfield() {
         width: '100%',
         height: '100%',
         zIndex: -1,
-        backgroundColor: '#000',
+        backgroundColor: colorScheme === 'dark' ? '#000' : 'var(--bg-color)',
         pointerEvents: 'none'
       }}
     />

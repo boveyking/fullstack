@@ -1,4 +1,4 @@
-import './Home.css';
+import './Demo.css';
 import './Dashboard.css';
 import { Box,Container } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';

@@ -10,10 +10,7 @@ export function Footer({ onContactClick }: FooterProps) {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-left">
-          <div className="footer-logo">fullstack</div>
-          <p className="footer-description">
-          Lorem ipsum dolor sit amet
-            </p>
+ 
           
           <nav className="footer-nav">
             <a href="/">Home</a>
@@ -25,11 +22,7 @@ export function Footer({ onContactClick }: FooterProps) {
           </nav>
         </div>
         
-        <div className="footer-right">
-          <h3 className="footer-cta-title">Lorem ipsum dolor sit amet, consectetur  </h3>
-          <a href="#" className="footer-cta-btn">Member Access</a>  
-          <p className="footer-copyright">© 2025 fullstack. All rights reserved.</p>
-        </div>
+        
       </div>
     </footer>
   );
