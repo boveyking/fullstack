@@ -91,20 +91,16 @@ fi
 
 echo ""
 echo "=== Setting up Python virtual environment ==="
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv "${ROOT}/.venv"
+source "${ROOT}/.venv/bin/activate"
 
 echo ""
 echo "=== Installing backend dependencies ==="
-cd backend
-pip install -r requirements.txt
-cd ..
+pip install -r "${ROOT}/backend/requirements.txt"
 
 echo ""
 echo "=== Installing frontend dependencies ==="
-cd frontend
-npm install
-cd ..
+npm install --prefix "${ROOT}/frontend"
 
 echo ""
 echo "Setup complete."
