@@ -69,6 +69,23 @@ if exist "!ROOT!\backend\fullstack.conf" (
 )
 
 echo.
+echo === Setting up Python virtual environment ===
+python -m venv .venv
+call ".venv\Scripts\activate.bat"
+
+echo.
+echo === Installing backend dependencies ===
+cd backend
+pip install -r requirements.txt
+cd ..
+
+echo.
+echo === Installing frontend dependencies ===
+cd frontend
+npm install
+cd ..
+
+echo.
 echo Setup complete.
 endlocal
 goto :eof
